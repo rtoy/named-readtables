@@ -156,7 +156,6 @@
         (char-code 0))
     (with-hash-table-iterator (ht-iterator char-macro-ht)
       (labels ((grovel-base-chars ()
-                 (declare (optimize sb-c::merge-tail-calls))
                  (if (>= char-code sb-int:base-char-code-limit)
                      (grovel-unicode-chars)
                      (let ((reader-fn (svref char-macro-array char-code))
