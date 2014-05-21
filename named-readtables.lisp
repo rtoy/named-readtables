@@ -341,14 +341,15 @@ guaranteed to be fresh, but may contain duplicates."
              (to-readtable condition))))
   (:documentation "Continuable.
 
-This condition is signaled during the merge process if a) a reader macro
-\(be it a macro character or the sub character of a dispatch macro
-character\) is both present in the source as well as the target readtable,
-and b) if and only if the two respective reader macro functions differ."))
+  This condition is signaled during the merge process if a reader
+  macro (be it a macro character or the sub character of a dispatch
+  macro character) is present in the both source and the target
+  readtable and the two respective reader macro functions differ."))
 
 (defun check-reader-macro-conflict (from to char &optional subchar)
   (flet ((conflictp (from-fn to-fn)
-           (assert from-fn) ; if this fails, there's a bug in readtable iterators.
+           (assert from-fn ()
+                   "Bug in readtable iterators or concurrent access?")
            (and to-fn (not (function= to-fn from-fn)))))
     (when (if subchar
               (conflictp (%get-dispatch-macro-character char subchar from)

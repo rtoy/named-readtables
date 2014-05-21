@@ -103,6 +103,21 @@
     (if (and (eq n1 :lambda) (eq n2 :lambda))
         (eq fn1 fn2)
         (equal n1 n2)))
+  #+ :sbcl
+  (let ((fn1 (ensure-function fn1))
+        (fn2 (ensure-function fn2)))
+    (or (eq fn1 fn2)
+        ;; After SBCL 1.1.18, for dispatch macro characters
+        ;; GET-MACRO-CHARACTER returns closures whose name is:
+        ;;
+        ;; (LAMBDA (STREAM CHAR) :IN SB-IMPL::%MAKE-DISPATCH-MACRO-CHAR)
+        ;; 
+        ;; Treat all these closures equivalent.
+        (let ((n1 (sb-impl::%fun-name fn1))
+              (n2 (sb-impl::%fun-name fn2)))
+          (and (listp n1) (listp n2)
+               (find 'sb-impl::%make-dispatch-macro-char n1)
+               (find 'sb-impl::%make-dispatch-macro-char n2)))))
   #+ :common-lisp
   (eq (ensure-function fn1) (ensure-function fn2)))
 

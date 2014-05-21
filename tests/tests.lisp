@@ -79,6 +79,14 @@
 (defreadtable A-as-X
   (:macro-char #\A #'read-A-as-X))
 
+(defreadtable A-dispatch
+  (:macro-char #\A :dispatch)
+  (:dispatch-macro-char #\A #\A #'read-A))
+
+(defreadtable A-dispatch-as-X
+  (:macro-char #\A :dispatch)
+  (:dispatch-macro-char #\A #\A #'read-A-as-X))
+
 (defreadtable B
   (:macro-char #\B #'read-B))
 
@@ -275,6 +283,31 @@
     (signals-condition-p 'reader-macro-conflict
       (merge-readtables-into (make-readtable) :standard 'sharp-paren))
   t)
+
+(deftest reader-macro-conflict.5
+    (signals-condition-p 'reader-macro-conflict
+      (merge-readtables-into (make-readtable) 'A 'A-dispatch))
+  t)
+
+(deftest reader-macro-conflict.6
+    (signals-condition-p 'reader-macro-conflict
+      (merge-readtables-into (make-readtable) 'A-dispatch 'A))
+  t)
+
+(deftest reader-macro-conflict.7
+    (signals-condition-p 'reader-macro-conflict
+      (merge-readtables-into (make-readtable) 'A-dispatch 'A-dispatch-as-X))
+  t)
+
+(deftest reader-macro-conflict.8
+    (signals-condition-p 'reader-macro-conflict
+      (merge-readtables-into (make-readtable) 'A 'A))
+  nil)
+
+(deftest reader-macro-conflict.9
+    (signals-condition-p 'reader-macro-conflict
+      (merge-readtables-into (make-readtable) 'A-dispatch 'A-dispatch))
+  nil)
 
 
 (deftest readtable-does-not-exist.1
