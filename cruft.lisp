@@ -113,11 +113,14 @@
         ;; (LAMBDA (STREAM CHAR) :IN SB-IMPL::%MAKE-DISPATCH-MACRO-CHAR)
         ;; 
         ;; Treat all these closures equivalent.
-        (let ((n1 (sb-impl::%fun-name fn1))
-              (n2 (sb-impl::%fun-name fn2)))
-          (and (listp n1) (listp n2)
-               (find 'sb-impl::%make-dispatch-macro-char n1)
-               (find 'sb-impl::%make-dispatch-macro-char n2)))))
+        (flet ((internal-dispatch-macro-closure-name-p (name)
+                 (find "SB-IMPL::%MAKE-DISPATCH-MACRO-CHAR" name
+                       :key #'prin1-to-string :test #'string=)))
+          (let ((n1 (sb-impl::%fun-name fn1))
+                (n2 (sb-impl::%fun-name fn2)))
+            (and (listp n1) (listp n2)
+                 (internal-dispatch-macro-closure-name-p n1)
+                 (internal-dispatch-macro-closure-name-p n2))))))
   #+ :common-lisp
   (eq (ensure-function fn1) (ensure-function fn2)))
 
