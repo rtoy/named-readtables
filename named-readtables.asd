@@ -19,12 +19,13 @@
   :version "0.9"
   :licence "BSD, see LICENSE"
   :default-component-class asdf::named-readtables-source-file
-  :serial t
-  :components ((:file "package")
-               (:file "utils")
-               (:file "define-api")
-               (:file "cruft")
-               (:file "named-readtables")))
+  :components ((:module "src"
+                :serial t
+                :components ((:file "package")
+                             (:file "utils")
+                             (:file "define-api")
+                             (:file "cruft")
+                             (:file "named-readtables")))))
 
 (defmethod asdf:perform ((o asdf:test-op)
                          (c (eql (asdf:find-system :named-readtables))))
@@ -38,12 +39,12 @@
   :mailto "mega@retes.hu"
   :depends-on (:named-readtables)
   :components
-  ((:module tests
-    :default-component-class asdf::named-readtables-source-file
-    :serial t
-    :components ((:file "package")
-                 (:file "rt")
-                 (:file "tests")))))
+  ((:module "test"
+            :default-component-class asdf::named-readtables-source-file
+            :serial t
+            :components ((:file "package")
+                         (:file "rt")
+                         (:file "tests")))))
 
 (defmethod asdf:perform ((o asdf:test-op)
                          (c (eql (asdf:find-system
