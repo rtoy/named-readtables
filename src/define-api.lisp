@@ -1,4 +1,3 @@
-
 (in-package :named-readtables)
 
 (defmacro define-api (name lambda-list type-list &body body)
@@ -26,7 +25,7 @@
                  #+sbcl (declare (sb-ext:unmuffle-conditions style-warning))
 
                  ,@decls
-                 
+
                  ;; SBCL will interpret the ftype declaration as
                  ;; assertion and will insert type checks for us.
                  #-sbcl
@@ -36,7 +35,7 @@
                            for req-type = (pop type-list)
                            do (assert req-type)
                            collect `(check-type ,req-arg ,req-type))
-                  
+
                    ;; CHECK-TYPE optional parameters
                    ,@(loop initially (assert (or (null opts)
                                                  (eq (pop type-list) '&optional)))

@@ -28,7 +28,7 @@
 
 ;;; Taken from SWANK (which is Public Domain.)
 
-(defmacro destructure-case (value &rest patterns)
+(defmacro destructure-case (value &body patterns)
   "Dispatch VALUE to one of PATTERNS.
 A cross between `case' and `destructuring-bind'.
 The pattern syntax is:

@@ -51,3 +51,12 @@
                                   :named-readtables-test))))
   (let ((*package* (find-package :named-readtables-test)))
     (funcall (intern (string '#:do-tests) *package*))))
+
+;;; MGL-PAX depends on NAMED-READTABLES so we must put documentation
+;;; in a separate system in order to be able to use MGL-PAX.
+(asdf:defsystem :named-readtables-doc
+  :depends-on (:named-readtables :mgl-pax)
+  :components
+  ((:module "src"
+    :serial t
+    :components ((:file "doc")))))

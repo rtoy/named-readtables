@@ -111,7 +111,7 @@
         ;; GET-MACRO-CHARACTER returns closures whose name is:
         ;;
         ;; (LAMBDA (STREAM CHAR) :IN SB-IMPL::%MAKE-DISPATCH-MACRO-CHAR)
-        ;; 
+        ;;
         ;; Treat all these closures equivalent.
         (flet ((internal-dispatch-macro-closure-name-p (name)
                  (find "SB-IMPL::%MAKE-DISPATCH-MACRO-CHAR" name
@@ -260,7 +260,7 @@
      "~&~@<  ~@;~A has not been ported to ~A. ~
        We fall back to a portable implementation of readtable iterators. ~
        This implementation has to grovel through all available characters. ~
-       On Unicode-aware implementations this may come with some costs.~@:>" 
+       On Unicode-aware implementations this may come with some costs.~@:>"
      (package-name '#.*package*) (lisp-implementation-type))))
 
 #-(or sbcl clozure allegro)
@@ -358,7 +358,7 @@
 ;;; some point in the future.
 (define-cruft %get-dispatch-macro-character (char subchar rt)
   "Ensure ANSI behaviour for GET-DISPATCH-MACRO-CHARACTER."
-  #+ :ccl         (ignore-errors 
+  #+ :ccl         (ignore-errors
                     (get-dispatch-macro-character char subchar rt))
   #+ :common-lisp (get-dispatch-macro-character char subchar rt))
 
