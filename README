@@ -211,14 +211,15 @@ and the API of packages.
         If no :MERGE clause is given, an empty readtable is used. See
         MAKE-READTABLE.
     
-    - `(:FUZE READTABLE-DESIGNATORS+)`
+    - `(:FUSE READTABLE-DESIGNATORS+)`
     
         Like :MERGE except:
     
         Error conditions of type READER-MACRO-CONFLICT that are signaled
         during the merge operation will be silently *continued*. It
         follows that reader macros in earlier entries will be
-        overwritten by later ones.
+        overwritten by later ones. For backward compatibility, :FUZE is
+        accepted as an alias of :FUSE.
     
     - `(:DISPATCH-MACRO-CHAR MACRO-CHAR SUB-CHAR FUNCTION)`
     
@@ -247,7 +248,7 @@ and the API of packages.
     Any number of option clauses may appear. The options are grouped by
     their type, but in each group the order the options appeared
     textually is preserved. The following groups exist and are executed
-    in the following order: :MERGE and :FUZE (one
+    in the following order: :MERGE and :FUSE (one
     group), :CASE, :MACRO-CHAR and :DISPATCH-MACRO-CHAR (one group),
     finally :SYNTAX-FROM.
     
@@ -291,7 +292,7 @@ and the API of packages.
 - [function] MERGE-READTABLES-INTO RESULT-READTABLE &REST NAMED-READTABLES
 
     Copy the contents of each readtable in NAMED-READTABLES into
-    RESULT-TABLE.
+    RESULT-READTABLE.
     
     If a macro character appears in more than one of the readtables,
     i.e. if a conflict is discovered during the merge, an error of type

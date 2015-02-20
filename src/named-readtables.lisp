@@ -34,14 +34,15 @@
       If no :MERGE clause is given, an empty readtable is used. See
       MAKE-READTABLE.
 
-  - `(:FUZE READTABLE-DESIGNATORS+)`
+  - `(:FUSE READTABLE-DESIGNATORS+)`
 
       Like :MERGE except:
 
       Error conditions of type READER-MACRO-CONFLICT that are signaled
       during the merge operation will be silently _continued_. It
       follows that reader macros in earlier entries will be
-      overwritten by later ones.
+      overwritten by later ones. For backward compatibility, :FUZE is
+      accepted as an alias of :FUSE.
 
   - `(:DISPATCH-MACRO-CHAR MACRO-CHAR SUB-CHAR FUNCTION)`
 
@@ -70,7 +71,7 @@
   Any number of option clauses may appear. The options are grouped by
   their type, but in each group the order the options appeared
   textually is preserved. The following groups exist and are executed
-  in the following order: :MERGE and :FUZE (one
+  in the following order: :MERGE and :FUSE (one
   group), :CASE, :MACRO-CHAR and :DISPATCH-MACRO-CHAR (one group),
   finally :SYNTAX-FROM.
 
@@ -95,6 +96,11 @@
              ((:merge &rest readtable-designators)
 	      `(merge-readtables-into ,var ,@(mapcar #'(lambda (x) `',x)
                                                      readtable-designators)))
+             ((:fuse &rest readtable-designators)
+	      `(handler-bind ((reader-macro-conflict #'continue))
+                 (merge-readtables-into ,var ,@(mapcar #'(lambda (x) `',x)
+                                                       readtable-designators))))
+             ;; alias for :FUSE
              ((:fuze &rest readtable-designators)
 	      `(handler-bind ((reader-macro-conflict #'continue))
                  (merge-readtables-into ,var ,@(mapcar #'(lambda (x) `',x)
@@ -116,7 +122,7 @@
 	   (setq clauses (if (listp clauses) clauses (list clauses)))
 	   (remove-if-not #'(lambda (x) (member x clauses))
 			  options :key #'first)))
-    (let* ((merge-clauses (remove-clauses '(:merge :fuze) options))
+    (let* ((merge-clauses (remove-clauses '(:merge :fuze :fuse) options))
 	   (case-clauses (remove-clauses :case  options))
 	   (macro-clauses (remove-clauses '(:macro-char :dispatch-macro-char)
                                           options))
@@ -299,7 +305,7 @@
     (result-readtable &rest named-readtables)
     (named-readtable-designator &rest named-readtable-designator => readtable)
   "Copy the contents of each readtable in NAMED-READTABLES into
-  RESULT-TABLE.
+  RESULT-READTABLE.
 
   If a macro character appears in more than one of the readtables,
   i.e. if a conflict is discovered during the merge, an error of type

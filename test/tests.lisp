@@ -349,7 +349,7 @@
 (deftest defreadtable.2
     (unwind-protect
          (signals-condition-p 't
-           (eval `(defreadtable does-not-exist (:fuze A A-as-X))))
+           (eval `(defreadtable does-not-exist (:fuse A A-as-X))))
       (unregister-readtable 'does-not-exist))
   nil)
 
