@@ -269,29 +269,35 @@
   (let ((char-code 0))
     #'(lambda ()
         (prog ()
-           :GROVEL
+         :GROVEL
            (when (< char-code char-code-limit)
-             (let* ((char (code-char char-code))
-                    (fn   (get-macro-character char readtable)))
+             (let ((char (code-char char-code)))
                (incf char-code)
-               (when (not fn) (go :GROVEL))
-               (multiple-value-bind (disp? alist)
-                   (handler-case ; grovel dispatch macro characters.
-                       (values t
-                               ;; Only grovel upper case characters to
-                               ;; avoid duplicates.
-                               (loop for code from 0 below char-code-limit
-                                     for subchar = (let ((ch (code-char code)))
-                                                     (when (or (not (alpha-char-p ch))
-                                                               (upper-case-p ch))
-                                                       ch))
-                                     for disp-fn = (and subchar
-                                                        (get-dispatch-macro-character
-                                                            char subchar readtable))
-                                     when disp-fn
-                                       collect (cons subchar disp-fn)))
-                     (error () nil))
-                 (return (values t char fn disp? alist)))))))))
+               (when (not char) (go :GROVEL))
+               (let ((fn (get-macro-character char readtable)))
+                 (when (not fn) (go :GROVEL))
+                 (multiple-value-bind (disp? alist)
+                     (handler-case ; grovel dispatch macro characters.
+                         (values
+                          t
+                          ;; Only grovel upper case characters to
+                          ;; avoid duplicates.
+                          (loop for code from 0 below char-code-limit
+                                for subchar = (non-lowercase-code-char code)
+                                for disp-fn = (and subchar
+                                                   (get-dispatch-macro-character
+                                                    char subchar readtable))
+                                when disp-fn
+                                  collect (cons subchar disp-fn)))
+                       (error () nil))
+                   (return (values t char fn disp? alist))))))))))
+
+#-(or sbcl clozure allegro)
+(defun non-lowercase-code-char (code)
+  (let ((ch (code-char code)))
+    (when (and ch (or (not (alpha-char-p ch))
+                      (upper-case-p ch)))
+      ch)))
 
 (defmacro do-readtable ((entry-designator readtable &optional result)
                         &body body)
@@ -383,7 +389,7 @@
 ;;; We don't need this on Allegro CL's as we hook into their
 ;;; named-readtable facility, and they provide such a method already.
 #-allegro
-(without-package-lock (:common-lisp)
+(without-package-lock (:common-lisp #+lispworks :implementation)
   (defmethod print-object :around ((rt readtable) stream)
     (let ((name (readtable-name rt)))
       (if name
