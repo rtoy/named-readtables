@@ -124,15 +124,10 @@
   #+ :common-lisp
   (eq (ensure-function fn1) (ensure-function fn2)))
 
-;;; CCL has a bug that prevents the portable form below from working
-;;; (Ticket 601). CLISP will incorrectly fold the call to G-D-M-C away
+;;; CLISP will incorrectly fold the call to G-D-M-C away
 ;;; if not declared inline.
 (define-cruft dispatch-macro-char-p (char rt)
   "Is CHAR a dispatch macro character in RT?"
-  #+ :ccl
-  (let ((def (cdr (nth-value 1 (ccl::%get-readtable-char char rt)))))
-    (or (consp (cdr def))
-        (eq (car def) #'ccl::read-dispatch)))
   #+ :common-lisp
   (handler-case (locally
                     #+clisp (declare (notinline get-dispatch-macro-character))
@@ -199,17 +194,31 @@
                      (t
                       (values t char disp-fn nil nil))))))
         #'grovel-base-chars))))
-
 #+clozure
 (defun %make-readtable-iterator (readtable)
-  (let ((char-macro-alist (ccl::rdtab.alist readtable)))
-    (lambda ()
-      (if char-macro-alist
-          (destructuring-bind (char . defn) (pop char-macro-alist)
-            (if (consp defn)
-                (values t char (car defn) t (cdr defn))
-                (values t char defn nil nil)))
-          (values nil nil nil nil nil)))))
+  (flet ((ensure-alist (x)
+           #.`(etypecase x
+                (list x)
+                ,@(uiop:if-let (sv (uiop:find-symbol* '#:sparse-vector :ccl nil))
+                    `((,sv
+                       (let ((table (uiop:symbol-call :ccl '#:sparse-vector-table x)))
+                         (uiop:while-collecting (c)
+                           (loop for i below (length table) do
+                             (uiop:if-let ((v (svref table i)))
+                               (loop with i8 = (ash i 8)
+                                     for j below (length v) do
+                                       (uiop:if-let ((datum (svref v j)))
+                                         (c (cons (code-char (+ i8 j)) datum))))))))))))))
+    (let ((char-macros
+            (ensure-alist
+             (#.(or (uiop:find-symbol* '#:rdtab.macros :ccl nil) (uiop:find-symbol* '#:rdtab.alist :ccl)) readtable))))
+      (lambda ()
+        (if char-macros
+            (destructuring-bind (char . defn) (pop char-macros)
+              (if (consp defn)
+                  (values t char (car defn) t (ensure-alist (cdr defn)))
+                  (values t char defn nil nil)))
+            (values nil nil nil nil nil))))))
 
 ;;; Written on ACL 8.0.
 #+allegro
