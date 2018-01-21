@@ -53,12 +53,12 @@
                             (eql x y)))))
 
 
-(defun read-A (stream c)
-  (declare (ignore stream c))
+(defun read-A (stream c &optional n)
+  (declare (ignore stream c n))
   :a)
 
-(defun read-A-as-X (stream c)
-  (declare (ignore stream c))
+(defun read-A-as-X (stream c &optional n)
+  (declare (ignore stream c n))
   :x)
 
 (defun read-B (stream c)
