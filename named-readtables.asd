@@ -43,7 +43,6 @@
    (:file "tests"))
   :perform (test-op (o c) (symbol-call :named-readtables-test '#:do-tests)))
 
-
 ;;; MGL-PAX depends on NAMED-READTABLES so we must put documentation
 ;;; in a separate system in order to be able to use MGL-PAX.
 (defsystem "named-readtables/doc"
