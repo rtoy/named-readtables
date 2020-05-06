@@ -28,7 +28,8 @@
 - Maintainer: Gábor Melis <mega@retes.hu>
 - Mailto: [mega@retes.hu](mailto:mega@retes.hu)
 - Homepage: [http://melisgl.github.io/named-readtables](http://melisgl.github.io/named-readtables)
-- Bug tracker: https://github.com/melisgl/named-readtables/issues
+- Bug tracker: [https://github.com/melisgl/named-readtables/issues](https://github.com/melisgl/named-readtables/issues)
+- Source control: [GIT](https://github.com/melisgl/named-readtables.git)
 
 <a id='x-28EDITOR-HINTS-2ENAMED-READTABLES-3A-40NAMED-READTABLES-INTRODUCTION-20MGL-PAX-3ASECTION-29'></a>
 
