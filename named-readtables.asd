@@ -15,7 +15,7 @@
   akin to the namespace of packages."
   :author "Tobias C. Rittweiler <trittweiler@common-lisp.net>"
   :maintainer "Gábor Melis <mega@retes.hu>"
-  :mailto "Gábor Melis <mega@retes.hu>"
+  :mailto "mega@retes.hu"
   :homepage "http://melisgl.github.io/named-readtables"
   :bug-tracker "https://github.com/melisgl/named-readtables/issues"
   :source-control (:git "https://github.com/melisgl/named-readtables.git")
@@ -35,7 +35,7 @@
   :description "Test suite for the Named-Readtables library."
   :author "Tobias C. Rittweiler <trittweiler@common-lisp.net>"
   :maintainer "Gábor Melis <mega@retes.hu>"
-  :mailto "Gábor Melis <mega@retes.hu>"
+  :mailto "mega@retes.hu"
   :depends-on ("named-readtables")
   :pathname "test"
   :serial t

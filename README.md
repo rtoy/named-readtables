@@ -25,8 +25,10 @@
   akin to the namespace of packages.
 - Licence: BSD, see LICENSE
 - Author: Tobias C. Rittweiler <trittweiler@common-lisp.net>
-- Maintainer: Gábor Melis
+- Maintainer: Gábor Melis <mega@retes.hu>
 - Mailto: [mega@retes.hu](mailto:mega@retes.hu)
+- Homepage: [http://melisgl.github.io/named-readtables](http://melisgl.github.io/named-readtables)
+- Bug tracker: https://github.com/melisgl/named-readtables/issues
 
 <a id='x-28EDITOR-HINTS-2ENAMED-READTABLES-3A-40NAMED-READTABLES-INTRODUCTION-20MGL-PAX-3ASECTION-29'></a>
 
@@ -307,6 +309,7 @@ and the API of packages.
 - [macro] **IN-READTABLE** *NAME*
 
     Set `*READTABLE*` to the readtable referred to by the symbol `NAME`.
+    Return the readtable.
 
 <a id='x-28EDITOR-HINTS-2ENAMED-READTABLES-3AMAKE-READTABLE-20FUNCTION-29'></a>
 
