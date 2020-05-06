@@ -14,8 +14,11 @@
   :description "Library that creates a namespace for named readtable
   akin to the namespace of packages."
   :author "Tobias C. Rittweiler <trittweiler@common-lisp.net>"
-  :maintainer "Gábor Melis"
-  :mailto "mega@retes.hu"
+  :maintainer "Gábor Melis <mega@retes.hu>"
+  :mailto "Gábor Melis <mega@retes.hu>"
+  :homepage "http://melisgl.github.io/named-readtables"
+  :bug-tracker "https://github.com/melisgl/named-readtables/issues"
+  :source-control (:git "https://github.com/melisgl/named-readtables.git")
   :version "0.9"
   :licence "BSD, see LICENSE"
   :default-component-class named-readtables-source-file
@@ -31,8 +34,8 @@
 (defsystem "named-readtables/test"
   :description "Test suite for the Named-Readtables library."
   :author "Tobias C. Rittweiler <trittweiler@common-lisp.net>"
-  :maintainer "Gábor Melis"
-  :mailto "mega@retes.hu"
+  :maintainer "Gábor Melis <mega@retes.hu>"
+  :mailto "Gábor Melis <mega@retes.hu>"
   :depends-on ("named-readtables")
   :pathname "test"
   :serial t
