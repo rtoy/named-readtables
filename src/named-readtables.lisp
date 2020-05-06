@@ -158,14 +158,16 @@
               readtable)))))))
 
 (defmacro in-readtable (name)
-  "Set *READTABLE* to the readtable referred to by the symbol NAME."
+  "Set *READTABLE* to the readtable referred to by the symbol NAME.
+  Return the readtable."
   (check-type name symbol)
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      ;; NB. The :LOAD-TOPLEVEL is needed for cases like (DEFVAR *FOO*
      ;; (GET-MACRO-CHARACTER #\"))
      (setf *readtable* (ensure-readtable ',name))
      (when (find-package :swank)
-       (%frob-swank-readtable-alist *package* *readtable*))))
+       (%frob-swank-readtable-alist *package* *readtable*))
+     *readtable*))
 
 ;;; KLUDGE: [interim solution]
 ;;;
