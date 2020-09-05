@@ -15,7 +15,7 @@
     - [3.4 Examples][cf94]
 - [4 Reference][373d]
 
-###### \[in package EDITOR-HINTS.NAMED-READTABLES\]
+###### \[in package EDITOR-HINTS.NAMED-READTABLES with nicknames NAMED-READTABLES\]
 <a id='x-28-22named-readtables-22-20ASDF-2FSYSTEM-3ASYSTEM-29'></a>
 
 ## 1 named-readtables ASDF System Details
@@ -245,8 +245,11 @@ and the API of packages.
     
     - `(:MERGE READTABLE-DESIGNATORS+)`
     
-        Merge the readtables designated into the new readtable being
-        defined as per [`MERGE-READTABLES-INTO`][77fa].
+        Merge the macro character definitions from the readtables
+        designated into the new readtable being defined as per
+        [`MERGE-READTABLES-INTO`][77fa]. The copied options are
+        `:DISPATCH-MACRO-CHAR`, `:MACRO-CHAR` and `:SYNTAX-FROM`, but not
+        `READTABLE-CASE`.
     
         If no `:MERGE` clause is given, an empty readtable is used. See
         [`MAKE-READTABLE`][958e].
@@ -319,7 +322,7 @@ and the API of packages.
     Creates and returns a new readtable under the specified
     `NAME`.
     
-    `MERGE` takes a list of NAMED-READTABLE-DESIGNATORS and specifies the
+    `MERGE` takes a list of [`NAMED-READTABLE-DESIGNATOR`][fa0c]S and specifies the
     readtables the new readtable is created from. (See the `:MERGE` clause
     of [`DEFREADTABLE`][8b94] for details.)
     
@@ -338,12 +341,15 @@ and the API of packages.
 
 - [function] **MERGE-READTABLES-INTO** *RESULT-READTABLE &REST NAMED-READTABLES*
 
-    Copy the contents of each readtable in `NAMED-READTABLES`([`0`][] [`1`][9b5b]) into
-    `RESULT-READTABLE`.
+    Copy macro character definitions of each readtable in
+    `NAMED-READTABLES` into `RESULT-READTABLE`.
     
     If a macro character appears in more than one of the readtables,
     i.e. if a conflict is discovered during the merge, an error of type
     [`READER-MACRO-CONFLICT`][acb7] is signaled.
+    
+    The copied options are `:DISPATCH-MACRO-CHAR`, `:MACRO-CHAR` and
+    `:SYNTAX-FROM`, but not `READTABLE-CASE`.
 
 <a id='x-28EDITOR-HINTS-2ENAMED-READTABLES-3AFIND-READTABLE-20FUNCTION-29'></a>
 

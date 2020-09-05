@@ -28,8 +28,11 @@
 
   - `(:MERGE READTABLE-DESIGNATORS+)`
 
-      Merge the readtables designated into the new readtable being
-      defined as per MERGE-READTABLES-INTO.
+      Merge the macro character definitions from the readtables
+      designated into the new readtable being defined as per
+      MERGE-READTABLES-INTO. The copied options are
+      :DISPATCH-MACRO-CHAR, :MACRO-CHAR and :SYNTAX-FROM, but not
+      READTABLE-CASE.
 
       If no :MERGE clause is given, an empty readtable is used. See
       MAKE-READTABLE.
@@ -306,12 +309,15 @@
 (define-api merge-readtables-into
     (result-readtable &rest named-readtables)
     (named-readtable-designator &rest named-readtable-designator => readtable)
-  "Copy the contents of each readtable in NAMED-READTABLES into
-  RESULT-READTABLE.
+  "Copy macro character definitions of each readtable in
+  NAMED-READTABLES into RESULT-READTABLE.
 
   If a macro character appears in more than one of the readtables,
   i.e. if a conflict is discovered during the merge, an error of type
-  READER-MACRO-CONFLICT is signaled."
+  READER-MACRO-CONFLICT is signaled.
+
+  The copied options are :DISPATCH-MACRO-CHAR, :MACRO-CHAR and
+  :SYNTAX-FROM, but not READTABLE-CASE."
   (flet ((merge-into (to from)
 	   (do-readtable ((char reader-fn non-terminating-p disp? table) from)
              (check-reader-macro-conflict from to char)
