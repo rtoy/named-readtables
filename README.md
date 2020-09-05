@@ -322,7 +322,7 @@ and the API of packages.
     Creates and returns a new readtable under the specified
     `NAME`.
     
-    `MERGE` takes a list of [`NAMED-READTABLE-DESIGNATOR`][fa0c]S and specifies the
+    `MERGE` takes a list of [`NAMED-READTABLE-DESIGNATOR`][fa0c]s and specifies the
     readtables the new readtable is created from. (See the `:MERGE` clause
     of [`DEFREADTABLE`][8b94] for details.)
     

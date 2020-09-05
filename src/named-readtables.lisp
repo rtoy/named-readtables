@@ -246,7 +246,7 @@
   "Creates and returns a new readtable under the specified
   NAME.
 
-  MERGE takes a list of NAMED-READTABLE-DESIGNATORS and specifies the
+  MERGE takes a list of NAMED-READTABLE-DESIGNATORs and specifies the
   readtables the new readtable is created from. (See the :MERGE clause
   of DEFREADTABLE for details.)
 
