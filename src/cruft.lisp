@@ -261,8 +261,55 @@
                                                      subch-fn))))))))
       #'grovel-macro-chars)))
 
+;; This really only needed for CMUCL with unicode support.  Without
+;; unicode, the default implementation is probably fast enough.
+#+cmucl
+(defun %make-readtable-iterator (readtable)
+  (let ((char-macro-ht    (lisp::character-macro-hash-table readtable))
+        (dispatch-tables  (lisp::dispatch-tables readtable))
+        (char-code 0))
+    (with-hash-table-iterator (ht-iterator char-macro-ht)
+      (labels ((grovel-base-chars ()
+                 (if (>= char-code lisp::attribute-table-limit)
+                     (grovel-unicode-chars)
+             (let* ((char      (code-char (shiftf char-code (1+ char-code))))
+		    ;; Need %get-macro-character here, not
+		    ;; get-macro-character because we want NIL
+		    ;; to be returned instead of
+		    ;; #'lisp::read-token.
+		    (reader-fn (%get-macro-character char readtable)))
+               (if reader-fn
+		   (yield char reader-fn)
+		   (grovel-base-chars)))))
+               (grovel-unicode-chars ()
+                 (multiple-value-bind (more? char reader-fn)
+             (ht-iterator)
+                   (if (not more?)
+                       (values nil nil nil nil nil)
+                       (yield char reader-fn))))
+               (yield (char reader-fn)
+                 (let ((disp-ht))
+                   (cond
+                     ((setq disp-ht (cdr (assoc char dispatch-tables)))
+                      (let ((disp-fn (get-macro-character char readtable))
+                (sub-char-alist))
+            (if (< (char-code char) lisp::attribute-table-limit)
+                (let ((disp (lisp::char-dispatch-table-table disp-ht)))
+                  (dotimes (k lisp::attribute-table-limit)
+                (let ((f (aref disp k)))
+                  (unless (eq f #'lisp::dispatch-char-error)
+                    (push (cons (code-char k) f)
+                      sub-char-alist)))))
+                (let ((disp-ht (lisp::char-dispatch-table-hash-table disp-ht)))
+                  (maphash (lambda (k v)
+                     (push (cons k v) sub-char-alist))
+                       disp-ht)))
+                        (values t char disp-fn t sub-char-alist)))
+                     (t
+                      (values t char reader-fn nil nil))))))
+        #'grovel-base-chars))))
 
-#-(or sbcl clozure allegro)
+#-(or sbcl clozure allegro cmucl)
 (eval-when (:compile-toplevel)
   (let ((*print-pretty* t))
     (simple-style-warn
@@ -272,7 +319,7 @@
        On Unicode-aware implementations this may come with some costs.~@:>"
      (package-name '#.*package*) (lisp-implementation-type))))
 
-#-(or sbcl clozure allegro)
+#-(or sbcl clozure allegro cmucl)
 (defun %make-readtable-iterator (readtable)
   (check-type readtable readtable)
   (let ((char-code 0))
@@ -365,6 +412,11 @@
       (setf (cdr   dispatch-tables) nil)
       (setf (caar  dispatch-tables) #\Backspace)
       (setf (cadar dispatch-tables) (fill (cadar dispatch-tables) nil))))
+  #+ :cmucl
+  (prog1 readtable
+    (do-readtable (char readtable)
+      (set-syntax-from-char char #\A readtable))
+    (setf (lisp::dispatch-tables readtable) nil))
   #+ :common-lisp
   (do-readtable (char readtable readtable)
     (set-syntax-from-char char #\A readtable)))
@@ -375,6 +427,12 @@
   "Ensure ANSI behaviour for GET-DISPATCH-MACRO-CHARACTER."
   #+ :ccl         (ignore-errors
                     (get-dispatch-macro-character char subchar rt))
+  #+ :cmucl
+  (let ((f (get-dispatch-macro-character char subchar rt)))
+    ;; CMUCL returns #'lisp::dispatch-char-error, and named-readtables
+    ;; wants nil in those cases.
+    (unless (eq f #'lisp::dispatch-char-error)
+      f))
   #+ :common-lisp (get-dispatch-macro-character char subchar rt))
 
 ;;; Allegro stores READ-TOKEN as reader macro function of each
@@ -385,6 +443,11 @@
                     (cond ((not fn) nil)
                           ((function= fn #'excl::read-token) nil)
                           (t fn)))
+  #+ :cmucl
+  (let ((fn (get-macro-character char rt)))
+    (cond ((not fn) nil)
+          ((function= fn #'lisp::read-token) nil)
+          (t fn)))  
   #+ :common-lisp (get-macro-character char rt))
 
 
